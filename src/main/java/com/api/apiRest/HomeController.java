@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import controlador.Controlador;
+import exceptions.EdificioException;
 import views.EdificioView;
+import views.UnidadView;
 
 /**
  * Handles requests for the application home page.
@@ -32,7 +34,7 @@ public class HomeController {
 		logger.info("Welcome home! The client locale is {}.", locale);
 		
 		Date date = new Date();
-		
+			
 		DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, locale);
 		
 		String formattedDate = dateFormat.format(date);
@@ -47,6 +49,7 @@ public class HomeController {
 		List<EdificioView> edificios = ctrl.getEdificiosView();
 		for (EdificioView ev : edificios)
 			logger.info(ev.toString());
+		
 		return "getEdificios";
 	}
 	
@@ -57,5 +60,18 @@ public class HomeController {
 		logger.info(param1);
 		logger.info(param2);
 		return "TEST PARAMETROS";
+	}
+	
+	@RequestMapping(value="/getUnidadesPorEdificio", method=RequestMethod.GET)
+	public String getUnidadesPorEdificio(@RequestParam("codigo") int codigo) {
+		Controlador ctrl = Controlador.getInstancia();
+		try {
+			List<UnidadView> unidades = ctrl.getUnidadesPorEdificio(codigo);
+			System.out.println(unidades.size());
+		} catch (EdificioException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return "UnidadPorEdificio";
 	}
 }
