@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import controlador.Controlador;
 import views.EdificioView;
@@ -31,18 +32,30 @@ public class HomeController {
 		logger.info("Welcome home! The client locale is {}.", locale);
 		
 		Date date = new Date();
+		
 		DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, locale);
 		
 		String formattedDate = dateFormat.format(date);
 		
 		model.addAttribute("serverTime", formattedDate );
+		return "home";
+	}
+	
+	@RequestMapping(value="/getEdificios", method = RequestMethod.GET)
+	public String getEdificios() {
 		Controlador ctrl = Controlador.getInstancia();
 		List<EdificioView> edificios = ctrl.getEdificiosView();
 		for (EdificioView ev : edificios)
 			logger.info(ev.toString());
-		logger.info("ola mina xd");
-		//System.out.println("hola!");
-		return "home";
+		return "getEdificios";
 	}
 	
+	//To send parametters
+	//localhost:8080/testParametters?param1=1&param2=2
+	@RequestMapping(value="/testParametters", method = RequestMethod.GET)
+	public String test(@RequestParam("param1") String param1, @RequestParam("param2") String param2) {
+		logger.info(param1);
+		logger.info(param2);
+		return "TEST PARAMETROS";
+	}
 }
