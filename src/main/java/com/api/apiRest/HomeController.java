@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import controlador.Controlador;
 import exceptions.EdificioException;
+import exceptions.UnidadException;
 import views.EdificioView;
+import views.PersonaView;
 import views.UnidadView;
 
 /**
@@ -63,7 +65,7 @@ public class HomeController {
 	}
 	
 	@RequestMapping(value="/getUnidadesPorEdificio", method=RequestMethod.GET)
-	public String getUnidadesPorEdificio(@RequestParam("codigo") int codigo) {
+	public void getUnidadesPorEdificio(@RequestParam("codigo") int codigo) {
 		Controlador ctrl = Controlador.getInstancia();
 		try {
 			List<UnidadView> unidades = ctrl.getUnidadesPorEdificio(codigo);
@@ -72,6 +74,55 @@ public class HomeController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return "UnidadPorEdificio";
+	}
+
+	@RequestMapping(value="/habilitadosPorEdificio", method = RequestMethod.GET)
+	public void habilitadosPorEdificio(@RequestParam("codigo") int codigo) {
+		Controlador ctrl = Controlador.getInstancia();
+		logger.info("xd");
+		try {
+			List<PersonaView> habilitados = ctrl.habilitadosPorEdificio(codigo);
+			System.out.println(habilitados.size());
+		} catch (EdificioException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	@RequestMapping(value="/dueniosPorEdificio", method = RequestMethod.GET)
+	public void dueniosPorEdificio(@RequestParam("codigo") int codigo) {
+		Controlador ctrl = Controlador.getInstancia();
+		try {
+			List<PersonaView> duenios = ctrl.dueniosPorEdificio(codigo);
+			System.out.println(duenios.size());
+		} catch (EdificioException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	@RequestMapping(value="/habitantesPorEdificio", method = RequestMethod.GET)
+	public void habitantesPorEdificio(@RequestParam("codigo") int codigo) {
+		Controlador ctrl = Controlador.getInstancia();
+		try {
+			List<PersonaView> habitantes = ctrl.habitantesPorEdificio(codigo);
+			System.out.println(habitantes.size());
+		} catch (EdificioException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	@RequestMapping(value="/dueniosPorUnidad", method = RequestMethod.GET)
+	public void dueniosPorUnidad(@RequestParam("codigo") int codigo, @RequestParam("piso") String piso, @RequestParam("numero") String numero) {
+		Controlador ctrl = Controlador.getInstancia();
+			try {
+				List<PersonaView> duenios = ctrl.dueniosPorUnidad(codigo, piso, numero);
+				System.out.println(duenios.size());
+			} catch (UnidadException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		
 	}
 }
