@@ -1,6 +1,7 @@
 package com.api.apiRest;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -12,6 +13,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import com.google.gson.Gson;
 
 import controlador.Controlador;
 import exceptions.EdificioException;
@@ -46,13 +49,18 @@ public class HomeController {
 	}
 	
 	@RequestMapping(value="/getEdificios", method = RequestMethod.GET)
-	public String getEdificios() {
+	public List<String> getEdificios() {
+		Gson gson =  new Gson();
+		List<String> jsonList = new ArrayList<String>();
+		
+		logger.info("xd");
+		
 		Controlador ctrl = Controlador.getInstancia();
 		List<EdificioView> edificios = ctrl.getEdificiosView();
 		for (EdificioView ev : edificios)
-			logger.info(ev.toString());
+			jsonList.add(gson.toJson(ev));
 		
-		return "getEdificios";
+		return jsonList;
 	}
 	
 	//To send parametters
