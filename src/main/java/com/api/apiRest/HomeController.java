@@ -73,64 +73,100 @@ public class HomeController {
 	}
 	
 	@RequestMapping(value="/getUnidadesPorEdificio", method=RequestMethod.GET)
-	public void getUnidadesPorEdificio(@RequestParam("codigo") int codigo) {
+	public List<String> getUnidadesPorEdificio(@RequestParam("codigo") int codigo) {
 		Controlador ctrl = Controlador.getInstancia();
+		Gson json = new Gson();
+		List<String> jsonlist = new ArrayList<String>();
 		try {
 			List<UnidadView> unidades = ctrl.getUnidadesPorEdificio(codigo);
 			System.out.println(unidades.size());
+			for (UnidadView uv: unidades) {
+				jsonlist.add(json.toJson(uv));
+			}
+			return jsonlist;
 		} catch (EdificioException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return null;
 	}
 
 	@RequestMapping(value="/habilitadosPorEdificio", method = RequestMethod.GET)
-	public void habilitadosPorEdificio(@RequestParam("codigo") int codigo) {
+	public List<String> habilitadosPorEdificio(@RequestParam("codigo") int codigo) {
 		Controlador ctrl = Controlador.getInstancia();
+		Gson json = new Gson();
+		List<String> jsonlist = new ArrayList<String>();
 		logger.info("xd");
 		try {
 			List<PersonaView> habilitados = ctrl.habilitadosPorEdificio(codigo);
 			System.out.println(habilitados.size());
+			for(PersonaView h : habilitados) {
+				jsonlist.add(json.toJson(h));
+			}
+			return jsonlist;
 		} catch (EdificioException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return null;
 	}
 
 	@RequestMapping(value="/dueniosPorEdificio", method = RequestMethod.GET)
-	public void dueniosPorEdificio(@RequestParam("codigo") int codigo) {
+	public List<String> dueniosPorEdificio(@RequestParam("codigo") int codigo) {
 		Controlador ctrl = Controlador.getInstancia();
+		Gson json = new Gson();
+		List<String> jsonlist = new ArrayList<String>();
 		try {
 			List<PersonaView> duenios = ctrl.dueniosPorEdificio(codigo);
-			System.out.println(duenios.size());
+			System.out.println(duenios.size());	
+			for(PersonaView h : duenios) {
+				jsonlist.add(json.toJson(h));
+			}
+			return jsonlist;
 		} catch (EdificioException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return null;
 	}
 	
 	@RequestMapping(value="/habitantesPorEdificio", method = RequestMethod.GET)
-	public void habitantesPorEdificio(@RequestParam("codigo") int codigo) {
+	public List<String> habitantesPorEdificio(@RequestParam("codigo") int codigo) {
 		Controlador ctrl = Controlador.getInstancia();
+		Gson json = new Gson();
+		List<String> jsonlist = new ArrayList<String>();
 		try {
 			List<PersonaView> habitantes = ctrl.habitantesPorEdificio(codigo);
 			System.out.println(habitantes.size());
+			for(PersonaView h : habitantes) {
+				jsonlist.add(json.toJson(h));
+			}
+			return jsonlist;
 		} catch (EdificioException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return null;
 	}
 	
 	@RequestMapping(value="/dueniosPorUnidad", method = RequestMethod.GET)
-	public void dueniosPorUnidad(@RequestParam("codigo") int codigo, @RequestParam("piso") String piso, @RequestParam("numero") String numero) {
+	public List<String> dueniosPorUnidad(@RequestParam("codigo") int codigo, @RequestParam("piso") String piso, @RequestParam("numero") String numero) {
 		Controlador ctrl = Controlador.getInstancia();
-			try {
+		Gson json = new Gson();
+		List<String> jsonlist = new ArrayList<String>();
+		try {
 				List<PersonaView> duenios = ctrl.dueniosPorUnidad(codigo, piso, numero);
 				System.out.println(duenios.size());
+				for(PersonaView h : duenios) {
+					jsonlist.add(json.toJson(h));
+				}
+				return jsonlist;
 			} catch (UnidadException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		
-	}
+			return null;
+		}
+	
+	
 }
