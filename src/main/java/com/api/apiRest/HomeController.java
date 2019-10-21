@@ -13,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.gson.Gson;
 
@@ -47,23 +48,23 @@ public class HomeController {
 		String formattedDate = dateFormat.format(date);
 		
 		model.addAttribute("serverTime", formattedDate );
+		logger.info("se conecto!");
 		return "home";
 	}
 	
-	@RequestMapping(value="/getEdificios", method = RequestMethod.GET)
-	public List<String> getEdificios() {
+	@RequestMapping(value="/getEdificios", method = RequestMethod.GET, produces = {"application/json"})
+	public @ResponseBody<json> String getEdificios() {
 		Gson gson =  new Gson();
-		List<String> jsonList = new ArrayList<String>();
-		
-		logger.info("xd");
-		
 		Controlador ctrl = Controlador.getInstancia();
 		List<EdificioView> edificios = ctrl.getEdificiosView();
-		for (EdificioView ev : edificios)
-			jsonList.add(gson.toJson(ev));
-		
-		return jsonList;
-	}
+		return gson.toJson(edificios);
+	}	
+/*	@RequestMapping(value = "/getEdificios", method = RequestMethod.GET, produces = {"application/json"})
+	public @ResponseBody<json> String getEdificios() throws JsonProcessingException {
+		List<EdificioView> edificios = Controlador.getInstancia().getEdificios();
+		ObjectMapper mapper = new ObjectMapper();
+		return mapper.writeValueAsString(edificios);
+	}*/
 	
 	//To send parametters
 	//localhost:8080/testParametters?param1=1&param2=2
@@ -74,18 +75,14 @@ public class HomeController {
 		return "TEST PARAMETROS";
 	}
 	
-	@RequestMapping(value="/getUnidadesPorEdificio", method=RequestMethod.GET)
-	public List<String> getUnidadesPorEdificio(@RequestParam("codigo") int codigo) {
+	@RequestMapping(value="/getUnidadesPorEdificio", method=RequestMethod.GET, produces = {"application/json"})
+	public @ResponseBody<json> String getUnidadesPorEdificio(@RequestParam("codigo") int codigo) {
 		Controlador ctrl = Controlador.getInstancia();
 		Gson json = new Gson();
-		List<String> jsonlist = new ArrayList<String>();
+		//List<String> jsonlist = new ArrayList<String>();
 		try {
 			List<UnidadView> unidades = ctrl.getUnidadesPorEdificio(codigo);
-			System.out.println(unidades.size());
-			for (UnidadView uv: unidades) {
-				jsonlist.add(json.toJson(uv));
-			}
-			return jsonlist;
+			return json.toJson(unidades);
 		} catch (EdificioException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -93,19 +90,13 @@ public class HomeController {
 		return null;
 	}
 
-	@RequestMapping(value="/habilitadosPorEdificio", method = RequestMethod.GET)
-	public List<String> habilitadosPorEdificio(@RequestParam("codigo") int codigo) {
+	@RequestMapping(value="/habilitadosPorEdificio", method = RequestMethod.GET, produces = {"application/json"})
+	public @ResponseBody<json> String habilitadosPorEdificio(@RequestParam("codigo") int codigo) {
 		Controlador ctrl = Controlador.getInstancia();
 		Gson json = new Gson();
-		List<String> jsonlist = new ArrayList<String>();
-		logger.info("xd");
 		try {
 			List<PersonaView> habilitados = ctrl.habilitadosPorEdificio(codigo);
-			System.out.println(habilitados.size());
-			for(PersonaView h : habilitados) {
-				jsonlist.add(json.toJson(h));
-			}
-			return jsonlist;
+			return json.toJson(habilitados);
 		} catch (EdificioException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -113,18 +104,14 @@ public class HomeController {
 		return null;
 	}
 
-	@RequestMapping(value="/dueniosPorEdificio", method = RequestMethod.GET)
-	public List<String> dueniosPorEdificio(@RequestParam("codigo") int codigo) {
+	@RequestMapping(value="/dueniosPorEdificio", method = RequestMethod.GET, produces = {"application/json"})
+	public @ResponseBody<json> String dueniosPorEdificio(@RequestParam("codigo") int codigo) {
 		Controlador ctrl = Controlador.getInstancia();
 		Gson json = new Gson();
-		List<String> jsonlist = new ArrayList<String>();
 		try {
 			List<PersonaView> duenios = ctrl.dueniosPorEdificio(codigo);
-			System.out.println(duenios.size());	
-			for(PersonaView h : duenios) {
-				jsonlist.add(json.toJson(h));
-			}
-			return jsonlist;
+			
+			return json.toJson(duenios);
 		} catch (EdificioException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -132,18 +119,13 @@ public class HomeController {
 		return null;
 	}
 	
-	@RequestMapping(value="/habitantesPorEdificio", method = RequestMethod.GET)
-	public List<String> habitantesPorEdificio(@RequestParam("codigo") int codigo) {
+	@RequestMapping(value="/habitantesPorEdificio", method = RequestMethod.GET, produces = {"application/json"})
+	public @ResponseBody<json> String habitantesPorEdificio(@RequestParam("codigo") int codigo) {
 		Controlador ctrl = Controlador.getInstancia();
 		Gson json = new Gson();
-		List<String> jsonlist = new ArrayList<String>();
 		try {
 			List<PersonaView> habitantes = ctrl.habitantesPorEdificio(codigo);
-			System.out.println(habitantes.size());
-			for(PersonaView h : habitantes) {
-				jsonlist.add(json.toJson(h));
-			}
-			return jsonlist;
+			return json.toJson(habitantes);
 		} catch (EdificioException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -151,18 +133,13 @@ public class HomeController {
 		return null;
 	}
 	
-	@RequestMapping(value="/dueniosPorUnidad", method = RequestMethod.GET)
-	public List<String> dueniosPorUnidad(@RequestParam("codigo") int codigo, @RequestParam("piso") String piso, @RequestParam("numero") String numero) {
+	@RequestMapping(value="/dueniosPorUnidad", method = RequestMethod.GET, produces = {"application/json"})
+	public  @ResponseBody<json> String dueniosPorUnidad(@RequestParam("codigo") int codigo, @RequestParam("piso") String piso, @RequestParam("numero") String numero) {
 		Controlador ctrl = Controlador.getInstancia();
 		Gson json = new Gson();
-		List<String> jsonlist = new ArrayList<String>();
 		try {
 				List<PersonaView> duenios = ctrl.dueniosPorUnidad(codigo, piso, numero);
-				System.out.println(duenios.size());
-				for(PersonaView h : duenios) {
-					jsonlist.add(json.toJson(h));
-				}
-				return jsonlist;
+				return json.toJson(duenios);
 			} catch (UnidadException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -266,18 +243,13 @@ public class HomeController {
 		}
 	}
 	
-	@RequestMapping(value="/reclamosPorEdificio", method = RequestMethod.GET)
-	public List<String> reclamosPorEdificio(@RequestParam("codigo") int codigo) {
+	@RequestMapping(value="/reclamosPorEdificio", method = RequestMethod.GET, produces = {"application/json"})
+	public @ResponseBody<json> String reclamosPorEdificio(@RequestParam("codigo") int codigo) {
 		Controlador ctrl = Controlador.getInstancia();
 		Gson json = new Gson();
-		List<String> jsonlist = new ArrayList<String>();
 		try {
 				List<ReclamoView> recl = ctrl.reclamosPorEdificio(codigo);
-				System.out.println(recl.size());
-				for(ReclamoView h : recl) {
-					jsonlist.add(json.toJson(h));
-				}
-				return jsonlist;
+				return json.toJson(recl);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -285,18 +257,13 @@ public class HomeController {
 			return null;
 		}
 	
-	@RequestMapping(value="/reclamosPorUnidad", method = RequestMethod.GET)
-	public List<String> reclamosPorUnidad(@RequestParam("codigo") int codigo, @RequestParam("piso") String piso, @RequestParam("numero") String numero) {
+	@RequestMapping(value="/reclamosPorUnidad", method = RequestMethod.GET, produces = {"application/json"})
+	public @ResponseBody<json> String reclamosPorUnidad(@RequestParam("codigo") int codigo, @RequestParam("piso") String piso, @RequestParam("numero") String numero) {
 		Controlador ctrl = Controlador.getInstancia();
 		Gson json = new Gson();
-		List<String> jsonlist = new ArrayList<String>();
 		try {
 				List<ReclamoView> recl = ctrl.reclamosPorUnidad(codigo, piso, numero);
-				System.out.println(recl.size());
-				for(ReclamoView h : recl) {
-					jsonlist.add(json.toJson(h));
-				}
-				return jsonlist;
+				return json.toJson(recl);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -304,8 +271,8 @@ public class HomeController {
 			return null;
 		}
 	
-	@RequestMapping(value="/reclamosPorUnidad", method = RequestMethod.GET)
-	public String reclamosPorNumero(@RequestParam("numero") int numero) {
+	@RequestMapping(value="/reclamosPorNumero", method = RequestMethod.GET, produces = {"application/json"})
+	public @ResponseBody<json> String reclamosPorNumero(@RequestParam("numero") int numero) {
 		Controlador ctrl = Controlador.getInstancia();
 		Gson json = new Gson();
 		try {
@@ -319,18 +286,13 @@ public class HomeController {
 			return null;
 		}
 	
-	@RequestMapping(value="/reclamosPorPersona", method = RequestMethod.GET)
-	public List<String> reclamosPorPersona(@RequestParam("documento") String documento) {
+	@RequestMapping(value="/reclamosPorPersona", method = RequestMethod.GET, produces = {"application/json"})
+	public @ResponseBody<json> String reclamosPorPersona(@RequestParam("documento") String documento) {
 		Controlador ctrl = Controlador.getInstancia();
 		Gson json = new Gson();
-		List<String> jsonlist = new ArrayList<String>();
 		try {
 				List<ReclamoView> recl = ctrl.reclamosPorPersona(documento);
-				System.out.println(recl.size());
-				for(ReclamoView h : recl) {
-					jsonlist.add(json.toJson(h));
-				}
-				return jsonlist;
+				return json.toJson(recl);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
