@@ -59,13 +59,13 @@ public class HomeController {
 		List<EdificioView> edificios = ctrl.getEdificiosView();
 		return gson.toJson(edificios);
 	}	
-/*	@RequestMapping(value = "/getEdificios", method = RequestMethod.GET, produces = {"application/json"})
-	public @ResponseBody<json> String getEdificios() throws JsonProcessingException {
-		List<EdificioView> edificios = Controlador.getInstancia().getEdificios();
-		ObjectMapper mapper = new ObjectMapper();
-		return mapper.writeValueAsString(edificios);
-	}*/
-	
+//	@RequestMapping(value = "/getEdificios", method = RequestMethod.GET, produces = {"application/json"})
+//	public @ResponseBody<json> String getEdificios() throws JsonProcessingException {
+//		List<EdificioView> edificios = Controlador.getInstancia().getEdificios();
+//		ObjectMapper mapper = new ObjectMapper();
+//		return mapper.writeValueAsString(edificios);
+//	}
+//	
 	//To send parametters
 	//localhost:8080/testParametters?param1=1&param2=2
 	@RequestMapping(value="/testParametters", method = RequestMethod.GET)
@@ -148,98 +148,84 @@ public class HomeController {
 		}
 	
 	@RequestMapping(value="/transferirUnidad", method = RequestMethod.POST)
-	public boolean transferirUnidad(@RequestParam("codigo") int codigo, @RequestParam("piso") String piso, @RequestParam("numero") String numero, @RequestParam("documento") String documento) {
+	public @ResponseBody<json> void transferirUnidad(@RequestParam("codigo") int codigo, @RequestParam("piso") String piso, @RequestParam("numero") String numero, @RequestParam("documento") String documento) {
 		Controlador ctrl = Controlador.getInstancia();
 		try {
 			ctrl.transferirUnidad(codigo,piso,numero,documento);
-			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
-			return false;
 		}
 	}
 	
 	@RequestMapping(value="/agregarDuenioUnidad", method = RequestMethod.POST)
-	public boolean agregarDuenioUnidad(@RequestParam("codigo") int codigo, @RequestParam("piso") String piso, @RequestParam("numero") String numero, @RequestParam("documento") String documento) {
+	public @ResponseBody<json> void agregarDuenioUnidad(@RequestParam("codigo") int codigo, @RequestParam("piso") String piso, @RequestParam("numero") String numero, @RequestParam("documento") String documento) {
 		Controlador ctrl = Controlador.getInstancia();
 		try {
 			ctrl.agregarDuenioUnidad(codigo,piso,numero,documento);
-			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
-			return false;
 		}
 	}
 	
 	@RequestMapping(value="/alquilarUnidad", method = RequestMethod.POST)
-	public boolean alquilarUnidad(@RequestParam("codigo") int codigo, @RequestParam("piso") String piso, @RequestParam("numero") String numero, @RequestParam("documento") String documento) {
+	public @ResponseBody<json> void alquilarUnidad(@RequestParam("codigo") int codigo, @RequestParam("piso") String piso, @RequestParam("numero") String numero, @RequestParam("documento") String documento) {
 		Controlador ctrl = Controlador.getInstancia();
 		try {
 			ctrl.alquilarUnidad(codigo,piso,numero,documento);
-			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
-			return false;
 		}
 	}
 	
 	@RequestMapping(value="/agregarInquilinoUnidad", method = RequestMethod.POST)
-	public boolean agregarInquilinoUnidad(@RequestParam("codigo") int codigo, @RequestParam("piso") String piso, @RequestParam("numero") String numero, @RequestParam("documento") String documento) {
+	public @ResponseBody<json> void agregarInquilinoUnidad(@RequestParam("codigo") int codigo, @RequestParam("piso") String piso, @RequestParam("numero") String numero, @RequestParam("documento") String documento) {
 		Controlador ctrl = Controlador.getInstancia();
 		try {
 			ctrl.agregarInquilinoUnidad(codigo,piso,numero,documento);
-			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
-			return false;
 		}
 	}
 	
 	@RequestMapping(value="/liberarUnidad", method = RequestMethod.POST)
-	public boolean liberarUnidad(@RequestParam("codigo") int codigo, @RequestParam("piso") String piso, @RequestParam("numero") String numero) {
+	public @ResponseBody<json> void liberarUnidad(@RequestParam("codigo") int codigo, @RequestParam("piso") String piso, @RequestParam("numero") String numero) {
 		Controlador ctrl = Controlador.getInstancia();
 		try {
 			ctrl.liberarUnidad(codigo,piso,numero);
-			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
-			return false;
 		}
 	}
 	
 	@RequestMapping(value="/habitarUnidad", method = RequestMethod.POST)
-	public boolean habitarUnidad(@RequestParam("codigo") int codigo, @RequestParam("piso") String piso, @RequestParam("numero") String numero) {
+	public @ResponseBody<json> void habitarUnidad(@RequestParam("codigo") int codigo, @RequestParam("piso") String piso, @RequestParam("numero") String numero) {
 		Controlador ctrl = Controlador.getInstancia();
 		try {
 			ctrl.habitarUnidad(codigo,piso,numero);
-			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
-			return false;
 		}
 	}
 	
 	@RequestMapping(value="/agregarPersona", method = RequestMethod.POST)
-	public boolean agregarPersona(@RequestParam("documento") String documento, @RequestParam("nombre") String nombre) {
+	public @ResponseBody<json> void agregarPersona(@RequestParam("documento") String documento, @RequestParam("nombre") String nombre) {
 		Controlador ctrl = Controlador.getInstancia();
 		try {
+			
 			ctrl.agregarPersona(documento, nombre);
-			return true;
 		} catch (Exception e) {
+			//logger.info(e.printStackTrace());
 			e.printStackTrace();
-			return false;
 		}
 	}
 	
 	@RequestMapping(value="/eliminarPersona", method = RequestMethod.POST)
-	public boolean eliminarPersona(@RequestParam("documento") String documento) {
+	public @ResponseBody<json> void eliminarPersona(@RequestParam("documento") String documento) {
 		Controlador ctrl = Controlador.getInstancia();
 		try {
 			ctrl.eliminarPersona(documento);
-			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
-			return false;
 		}
 	}
 	
@@ -301,30 +287,34 @@ public class HomeController {
 		}
 	
 	@RequestMapping(value="/agregarReclamo", method = RequestMethod.POST)
-	public int agregarReclamo(@RequestParam("codigo") int codigoEdificio,@RequestParam("piso") String piso, @RequestParam("numero") String numero, @RequestParam("documento") String documento,@RequestParam("ubicacion") String ubicacion,@RequestParam("descripcion") String descripcion) {
+	public @ResponseBody<json> void agregarReclamo(@RequestParam("codigo") int codigoEdificio,
+													@RequestParam("piso") String piso, 
+													@RequestParam("numero") String numero, 
+													@RequestParam("documento") String documento,
+													@RequestParam("ubicacion") String ubicacion,
+													@RequestParam("descripcion") String descripcion) {
 		Controlador ctrl = Controlador.getInstancia();
+		int res= -1;
 		try {
-			return ctrl.agregarReclamo(codigoEdificio, piso, numero, documento, ubicacion, descripcion);
+			res= ctrl.agregarReclamo(codigoEdificio, piso, numero, documento, ubicacion, descripcion);
 		} catch (Exception e) {
 			e.printStackTrace();
-			return -1;
 		}
+		logger.info(res+"");
 	}
 	
 	//TODO agregar imagen a reclamo
 	
 	@RequestMapping(value="/cambiarEstado", method = RequestMethod.POST) //TODO ver qué onda, se puede pasar a esto un elemento de enum?
-	public boolean cambiarEstado(@RequestParam("numero") int numero, @RequestParam("estado") Estado estado) {
+	public @ResponseBody<json> void cambiarEstado(@RequestParam("numero") int numero, @RequestParam("estado") Estado estado) {
 		Controlador ctrl = Controlador.getInstancia();
 		try {
 			ctrl.cambiarEstado(numero,estado);
-			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
-			return false;
 		}
 	}
-	
+
 	
 	
 	
