@@ -136,7 +136,7 @@ public class FtpConnectionManager {
 				boolean uploaded = false;
 				try {
 					System.out.println("Subiendo archivo!");
-					uploaded = ftpclient.storeFile(fileFtpName, inputStream);
+					uploaded = ftpclient.storeFile(fileFtpName + formatoImagen, inputStream);
 				} catch (IOException e) {
 					System.out.println("error al guardar el archivo en el servidor.");
 					e.printStackTrace();
