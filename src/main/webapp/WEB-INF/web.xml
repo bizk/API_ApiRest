@@ -29,5 +29,13 @@
 		<servlet-name>appServlet</servlet-name>
 		<url-pattern>/</url-pattern>
 	</servlet-mapping>
-
+		<filter>
+	<filter-name>CORSFilter</filter-name>
+		<filter-class>com.api.apiRest.CORSFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>CORSFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	
 </web-app>
