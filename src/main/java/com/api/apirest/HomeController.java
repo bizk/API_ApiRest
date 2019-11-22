@@ -1,4 +1,4 @@
-package com.api.apirest;
+package com.api.apiRest;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,6 +32,7 @@ import views.Estado;
 import views.PersonaView;
 import views.ReclamoView;
 import views.UnidadView;
+import views.UsrView;
 
 /**
  * Handles requests for the application home page.
@@ -41,7 +42,7 @@ public class HomeController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 
-	
+	private static PersonaView usuario;
 	/**
 	 * Simply selects the home view to render by returning its name.
 	 */
@@ -335,6 +336,22 @@ public class HomeController {
 			ctrl.cambiarEstado(numero,estado);
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+	
+	@RequestMapping(value="/login", method= RequestMethod.POST)
+	public @ResponseBody<json> String login(@RequestParam("usr") String usr, @RequestParam("pwd") String pwd) {
+		Controlador ctrl =  Controlador.getInstancia();
+		Gson json = new Gson();
+		try {
+			this.usuario = ctrl.login(usr);
+			if (this.usuario.getNombre().equals(pwd))
+				return json.toJson(this.usuario);
+			else
+				return null;
+		} catch (Exception e) {
+			System.out.println("El usuario no existe");
+			return null;
 		}
 	}
 }
