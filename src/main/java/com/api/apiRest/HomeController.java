@@ -1,7 +1,8 @@
 package com.api.apiRest;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.DateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -14,11 +15,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.api.ftpConnection.FtpConnectionManager;
 import com.google.gson.Gson;
 
 import controlador.Controlador;
 import exceptions.EdificioException;
+import exceptions.ReclamoException;
 import exceptions.UnidadException;
 import views.EdificioView;
 import views.Estado;
@@ -30,19 +34,23 @@ import views.UnidadView;
  * Handles requests for the application home page.
  */
 @Controller
+//@CrossOrigin(origins = "*", methods= {RequestMethod.GET,RequestMethod.POST})//
 public class HomeController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
+
 	
 	/**
 	 * Simply selects the home view to render by returning its name.
 	 */
 	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String home(Locale locale, Model model) {
+	public String home(Locale locale, Model model) throws IOException {
 		logger.info("Welcome home! The client locale is {}.", locale);
 		
 		Date date = new Date();
 			
+		//FtpConnectionManager.uploadFile();
+		
 		DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, locale);
 		
 		String formattedDate = dateFormat.format(date);
@@ -303,20 +311,25 @@ public class HomeController {
 		logger.info(res+"");
 	}
 	
-	//TODO agregar imagen a reclamo
 	
-	@RequestMapping(value="/cambiarEstado", method = RequestMethod.POST) //TODO ver qué onda, se puede pasar a esto un elemento de enum?
-	public @ResponseBody<json> void cambiarEstado(@RequestParam("numero") int numero, @RequestParam("estado") Estado estado) {
+	@RequestMapping(value="/agregarImagenReclamo",method = { RequestMethod.POST, RequestMethod.PUT },
+            consumes = { "multipart/form-data" }) //TODO terminar
+	 public void agregarImagenReclamo(@RequestParam("nroreclamo") int nroreclamo, @RequestParam("file") MultipartFile file) {
+		 try {
+			Controlador.getInstancia().agregarImagenAReclamo(nroreclamo, FtpConnectionManager.uploadFile((File) file), file.getContentType());
+		} catch (ReclamoException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@RequestMapping(value="/cambiarEstado", method = RequestMethod.POST) //TODO ver quï¿½ onda, se puede pasar a esto un elemento de enum?
+	public void cambiarEstado(@RequestParam("numero") int numero, @RequestParam("estado") String estado) {
 		Controlador ctrl = Controlador.getInstancia();
 		try {
-			ctrl.cambiarEstado(numero,estado);
+			logger.info(Estado.valueOf(estado).toString());
+			ctrl.cambiarEstado(numero,Estado.valueOf(estado));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-
-	
-	
-	
-	
 }
