@@ -295,7 +295,7 @@ public class HomeController {
 		}
 	
 	@RequestMapping(value="/agregarReclamo", method = RequestMethod.POST)
-	public @ResponseBody<json> void agregarReclamo(@RequestParam("codigo") int codigoEdificio,
+	public @ResponseBody<json> String agregarReclamo(@RequestParam("codigo") int codigoEdificio,
 													@RequestParam("piso") String piso, 
 													@RequestParam("numero") String numero, 
 													@RequestParam("documento") String documento,
@@ -309,6 +309,7 @@ public class HomeController {
 			e.printStackTrace();
 		}
 		logger.info(res+"");
+		return "{\"nroreclamo\": "+res+"}";
 	}
 	
 	
