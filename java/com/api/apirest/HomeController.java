@@ -1,6 +1,5 @@
 package com.api.apirest;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.SocketException;
 import java.text.DateFormat;
@@ -21,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.api.ftpConnection.FtpConnectionManager;
-import com.api.ftpConnection.HashAlgo;
 import com.google.gson.Gson;
 
 import controlador.Controlador;
@@ -50,7 +48,8 @@ public class HomeController {
 		logger.info("Welcome home! The client locale is {}.", locale);
 		
 		Date date = new Date();
-		
+			
+		FtpConnectionManager.uploadFile();
 		
 		DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, locale);
 		
@@ -313,17 +312,6 @@ public class HomeController {
 	}
 	
 	//TODO agregar imagen a reclamo
-	@RequestMapping(value="/agregarReclamo", method = RequestMethod.POST)
-	public @ResponseBody<json> void agregarImagenReclamo(@RequestParam("numero") int numero,
-			@RequestParam("imagen")File imagen, @RequestParam("tipo") String tipo) {
-		Controlador ctrl = Controlador.getInstancia();
-		try {
-			String direccion = HashAlgo.getFileHash(imagen);
-			ctrl.agregarImagenAReclamo(numero, direccion, tipo);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 	
 	@RequestMapping(value="/cambiarEstado", method = RequestMethod.POST) //TODO ver qu� onda, se puede pasar a esto un elemento de enum?
 	public @ResponseBody<json> void cambiarEstado(@RequestParam("numero") int numero, @RequestParam("estado") Estado estado) {
