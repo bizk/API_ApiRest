@@ -26,6 +26,7 @@ import exceptions.ReclamoException;
 import exceptions.UnidadException;
 import views.EdificioView;
 import views.Estado;
+import views.ImagenView;
 import views.PersonaView;
 import views.ReclamoView;
 import views.UnidadView;
@@ -313,17 +314,31 @@ public class HomeController {
 	}
 	
 	
-	@RequestMapping(value="/agregarImagenReclamo",method = { RequestMethod.POST, RequestMethod.PUT },
-            consumes = { "multipart/form-data" }) //TODO terminar
-	 public void agregarImagenReclamo(@RequestParam("nroreclamo") int nroreclamo, @RequestParam("file") MultipartFile file) {
+	@RequestMapping(value="/agregarImagenReclamo",method = { RequestMethod.POST, RequestMethod.PUT }) //No importa el error que tira por consola, anda flamoide
+	 public void agregarImagenReclamo(@RequestParam("nroreclamo") int nroreclamo, @RequestParam("id") String id) {
 		 try {
-			Controlador.getInstancia().agregarImagenAReclamo(nroreclamo, FtpConnectionManager.uploadFile((File) file), file.getContentType());
+			Controlador.getInstancia().agregarImagenAReclamo(nroreclamo, id, "imagen");
 		} catch (ReclamoException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	@RequestMapping(value="/cambiarEstado", method = RequestMethod.POST) //TODO ver qu� onda, se puede pasar a esto un elemento de enum?
+	@RequestMapping(value="/imagenesPorReclamo", method = RequestMethod.GET, produces = {"application/json"})
+	public @ResponseBody<json> String imagenesPorReclamo(@RequestParam("nroreclamo") int nroreclamo) {
+		Controlador ctrl = Controlador.getInstancia();
+		Gson json = new Gson();
+		try {
+				List<ImagenView> imgv = ctrl.getImagenes(nroreclamo);
+				return json.toJson(imgv);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return null;
+		}
+	
+	
+	@RequestMapping(value="/cambiarEstado", method = RequestMethod.POST) 
 	public void cambiarEstado(@RequestParam("numero") int numero, @RequestParam("estado") String estado) {
 		Controlador ctrl = Controlador.getInstancia();
 		try {
