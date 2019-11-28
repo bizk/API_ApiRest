@@ -70,13 +70,7 @@ public class HomeController {
 		List<EdificioView> edificios = ctrl.getEdificiosView();
 		return gson.toJson(edificios);
 	}	
-//	@RequestMapping(value = "/getEdificios", method = RequestMethod.GET, produces = {"application/json"})
-//	public @ResponseBody<json> String getEdificios() throws JsonProcessingException {
-//		List<EdificioView> edificios = Controlador.getInstancia().getEdificios();
-//		ObjectMapper mapper = new ObjectMapper();
-//		return mapper.writeValueAsString(edificios);
-//	}
-//	
+
 	//To send parametters
 	//localhost:8080/testParametters?param1=1&param2=2
 	@RequestMapping(value="/testParametters", method = RequestMethod.GET)
@@ -86,7 +80,7 @@ public class HomeController {
 		return "TEST PARAMETROS";
 	}
 	
-	@RequestMapping(value="/getUnidadesPorEdificio", method=RequestMethod.GET, produces = {"application/json"})
+	@RequestMapping(value="/getUnidadesPorEdificio", method=RequestMethod.POST, produces = {"application/json"})
 	public @ResponseBody<json> String getUnidadesPorEdificio(@RequestParam("codigo") int codigo) {
 		Controlador ctrl = Controlador.getInstancia();
 		Gson json = new Gson();
@@ -368,8 +362,9 @@ public class HomeController {
 	}
 	
 	@RequestMapping(value="/loggedSucces", method = RequestMethod.GET, produces = {"application/json"})
-	public @ResponseBody<json> boolean isLogged() {
-		return this.loggedSuccess;
+	public @ResponseBody<json> String isLogged() {
+		Gson json = new Gson();
+		return json.toJson(this.loggedSuccess);
 	}
 	
 	@RequestMapping(value="/logOff", method= RequestMethod.POST)
