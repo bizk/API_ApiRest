@@ -81,7 +81,7 @@ public class HomeController {
 		return "TEST PARAMETROS";
 	}
 	
-	@RequestMapping(value="/getUnidadesPorEdificio", method=RequestMethod.POST, produces = {"application/json"})
+	@RequestMapping(value="/getUnidadesPorEdificio", method=RequestMethod.GET, produces = {"application/json"})
 	public @ResponseBody<json> String getUnidadesPorEdificio(@RequestParam("codigo") int codigo) {
 		Controlador ctrl = Controlador.getInstancia();
 		Gson json = new Gson();
@@ -139,6 +139,8 @@ public class HomeController {
 		return null;
 	}
 	
+	
+	//Implementar esto
 	@RequestMapping(value="/dueniosPorUnidad", method = RequestMethod.GET, produces = {"application/json"})
 	public  @ResponseBody<json> String dueniosPorUnidad(@RequestParam("codigo") int codigo, @RequestParam("piso") String piso, @RequestParam("numero") String numero) {
 		Controlador ctrl = Controlador.getInstancia();
@@ -153,10 +155,27 @@ public class HomeController {
 			return null;
 		}
 	
+	@RequestMapping(value="/inquilinosPorUnidad", method = RequestMethod.GET, produces = {"application/json"})
+	public  @ResponseBody<json> String inquilinosPorUnidad(@RequestParam("codigo") int codigo, @RequestParam("piso") String piso, @RequestParam("numero") String numero) {
+		Controlador ctrl = Controlador.getInstancia();
+		Gson json = new Gson();
+		try {
+				List<PersonaView> duenios = ctrl.inquilinosPorUnidad(codigo, piso, numero);
+				return json.toJson(duenios);
+			} catch (UnidadException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return null;
+		}
+	//Falta lo de arriba
+	
 	@RequestMapping(value="/transferirUnidad", method = RequestMethod.POST)
 	public @ResponseBody<json> void transferirUnidad(@RequestParam("codigo") int codigo, @RequestParam("piso") String piso, @RequestParam("numero") String numero, @RequestParam("documento") String documento) {
 		Controlador ctrl = Controlador.getInstancia();
+		System.out.println("!!!");
 		try {
+			System.out.println("Funca");
 			ctrl.transferirUnidad(codigo,piso,numero,documento);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -167,6 +186,7 @@ public class HomeController {
 	public @ResponseBody<json> void agregarDuenioUnidad(@RequestParam("codigo") int codigo, @RequestParam("piso") String piso, @RequestParam("numero") String numero, @RequestParam("documento") String documento) {
 		Controlador ctrl = Controlador.getInstancia();
 		try {
+			System.out.println("Funca");
 			ctrl.agregarDuenioUnidad(codigo,piso,numero,documento);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -177,6 +197,7 @@ public class HomeController {
 	public @ResponseBody<json> void alquilarUnidad(@RequestParam("codigo") int codigo, @RequestParam("piso") String piso, @RequestParam("numero") String numero, @RequestParam("documento") String documento) {
 		Controlador ctrl = Controlador.getInstancia();
 		try {
+			System.out.println("Funca");
 			ctrl.alquilarUnidad(codigo,piso,numero,documento);
 		} catch (Exception e) {
 			e.printStackTrace();
