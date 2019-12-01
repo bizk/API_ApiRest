@@ -168,8 +168,8 @@ public class HomeController {
 			}
 			return null;
 		}
-	//Falta lo de arriba
 	
+	//Falta lo de arriba
 	@RequestMapping(value="/transferirUnidad", method = RequestMethod.POST)
 	public @ResponseBody<json> void transferirUnidad(@RequestParam("codigo") int codigo, @RequestParam("piso") String piso, @RequestParam("numero") String numero, @RequestParam("documento") String documento) {
 		Controlador ctrl = Controlador.getInstancia();
@@ -186,7 +186,6 @@ public class HomeController {
 	public @ResponseBody<json> void agregarDuenioUnidad(@RequestParam("codigo") int codigo, @RequestParam("piso") String piso, @RequestParam("numero") String numero, @RequestParam("documento") String documento) {
 		Controlador ctrl = Controlador.getInstancia();
 		try {
-			System.out.println("Funca");
 			ctrl.agregarDuenioUnidad(codigo,piso,numero,documento);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -383,6 +382,7 @@ public class HomeController {
 			this.loggedSuccess = true;
 			this.usr = pwd;
 		} else {
+			this.loggedSuccess = false;
 			try {
 				this.loggedSuccess = ctrl.login(usr, pwd);
 				if (this.loggedSuccess == true)  {
