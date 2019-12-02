@@ -1,0 +1,6 @@
+*_
+.project
+.classpath
+.settings/
+target/
+target/classes/com/api/apiRest/HomeController.class

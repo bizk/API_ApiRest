@@ -22,6 +22,7 @@ import com.google.gson.Gson;
 
 import controlador.Controlador;
 import exceptions.EdificioException;
+import exceptions.PersonaException;
 import exceptions.ReclamoException;
 import exceptions.UnidadException;
 import views.EdificioView;
@@ -40,6 +41,8 @@ public class HomeController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 
+	private boolean loggedSuccess;
+	private  String usr;
 	
 	/**
 	 * Simply selects the home view to render by returning its name.
@@ -68,13 +71,7 @@ public class HomeController {
 		List<EdificioView> edificios = ctrl.getEdificiosView();
 		return gson.toJson(edificios);
 	}	
-//	@RequestMapping(value = "/getEdificios", method = RequestMethod.GET, produces = {"application/json"})
-//	public @ResponseBody<json> String getEdificios() throws JsonProcessingException {
-//		List<EdificioView> edificios = Controlador.getInstancia().getEdificios();
-//		ObjectMapper mapper = new ObjectMapper();
-//		return mapper.writeValueAsString(edificios);
-//	}
-//	
+
 	//To send parametters
 	//localhost:8080/testParametters?param1=1&param2=2
 	@RequestMapping(value="/testParametters", method = RequestMethod.GET)
@@ -142,6 +139,8 @@ public class HomeController {
 		return null;
 	}
 	
+	
+	//Implementar esto
 	@RequestMapping(value="/dueniosPorUnidad", method = RequestMethod.GET, produces = {"application/json"})
 	public  @ResponseBody<json> String dueniosPorUnidad(@RequestParam("codigo") int codigo, @RequestParam("piso") String piso, @RequestParam("numero") String numero) {
 		Controlador ctrl = Controlador.getInstancia();
@@ -156,10 +155,27 @@ public class HomeController {
 			return null;
 		}
 	
+	@RequestMapping(value="/inquilinosPorUnidad", method = RequestMethod.GET, produces = {"application/json"})
+	public  @ResponseBody<json> String inquilinosPorUnidad(@RequestParam("codigo") int codigo, @RequestParam("piso") String piso, @RequestParam("numero") String numero) {
+		Controlador ctrl = Controlador.getInstancia();
+		Gson json = new Gson();
+		try {
+				List<PersonaView> duenios = ctrl.inquilinosPorUnidad(codigo, piso, numero);
+				return json.toJson(duenios);
+			} catch (UnidadException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return null;
+		}
+	
+	//Falta lo de arriba
 	@RequestMapping(value="/transferirUnidad", method = RequestMethod.POST)
 	public @ResponseBody<json> void transferirUnidad(@RequestParam("codigo") int codigo, @RequestParam("piso") String piso, @RequestParam("numero") String numero, @RequestParam("documento") String documento) {
 		Controlador ctrl = Controlador.getInstancia();
+		System.out.println("!!!");
 		try {
+			System.out.println("Funca");
 			ctrl.transferirUnidad(codigo,piso,numero,documento);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -180,6 +196,7 @@ public class HomeController {
 	public @ResponseBody<json> void alquilarUnidad(@RequestParam("codigo") int codigo, @RequestParam("piso") String piso, @RequestParam("numero") String numero, @RequestParam("documento") String documento) {
 		Controlador ctrl = Controlador.getInstancia();
 		try {
+			System.out.println("Funca");
 			ctrl.alquilarUnidad(codigo,piso,numero,documento);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -347,5 +364,58 @@ public class HomeController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	/*
+	 *  ###################################################################
+	 * 							= DISCLAIMER =
+	 * 		- We know this is a mounstrosity, we are not proud of this, 
+	 * 		but it serves it purpouse, the shame of this project will
+	 * 		haunt us until our time comes. :.C
+	 * ###################################################################
+	*/
+	@RequestMapping(value="/login", method= RequestMethod.POST)
+	public @ResponseBody<json> void login(@RequestParam("usr") String usr, @RequestParam("pwd") String pwd) {
+		Controlador ctrl =  Controlador.getInstancia();
+		Gson json = new Gson();
+		if (usr.equals("admin")&&pwd.equals("admin")) {
+			this.loggedSuccess = true;
+			this.usr = pwd;
+		} else {
+			this.loggedSuccess = false;
+			try {
+				this.loggedSuccess = ctrl.login(usr, pwd);
+				if (this.loggedSuccess == true)  {
+					this.usr = pwd;
+					System.out.println("Usuario logeado con exito");
+				} else {
+					System.out.println("Error de autenticacion");
+				}
+			} catch (Exception e) {
+				System.out.println("El usuario no existe");
+			}
+		}
+	}
+	
+	@RequestMapping(value="/loggedSucces", method = RequestMethod.GET, produces = {"application/json"})
+	public @ResponseBody<json> String isLogged() {
+		Gson json = new Gson();
+		return json.toJson(this.loggedSuccess);
+	}
+	
+	@RequestMapping(value="/logOff", method= RequestMethod.POST)
+	public @ResponseBody<json> void logOff() {
+		this.loggedSuccess = false;
+		this.usr = null;
+	} 
+	
+	@RequestMapping(value="/getUsrInfo", method = RequestMethod.GET, produces = {"application/json"})
+	public @ResponseBody<json> String getUsrInfo() throws PersonaException {
+		Controlador ctrl = Controlador.getInstancia();
+		Gson json = new Gson();
+		if (this.loggedSuccess && this.usr != null &&!this.usr.isEmpty() && !this.usr.equals("admin"))
+			return json.toJson(ctrl.userInfo(this.usr));
+		else 
+			return null;
 	}
 }

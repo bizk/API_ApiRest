@@ -26,6 +26,7 @@ import com.google.gson.Gson;
 
 import controlador.Controlador;
 import exceptions.EdificioException;
+import exceptions.PersonaException;
 import exceptions.UnidadException;
 import views.EdificioView;
 import views.Estado;
@@ -41,6 +42,8 @@ public class HomeController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 
+	private boolean loggedSuccess;
+	private  String usr;
 	
 	/**
 	 * Simply selects the home view to render by returning its name.
@@ -336,5 +339,57 @@ public class HomeController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	
+	/*
+	 *  ###################################################################
+	 * 							= DISCLAIMER =
+	 * 		- We know this is a mounstrosity, we are not proud of this, 
+	 * 		but it serves it purpouse, the shame of this project will
+	 * 		haunt us until our time comes. :.C
+	 * ###################################################################
+	*/
+	@RequestMapping(value="/login", method= RequestMethod.POST)
+	public @ResponseBody<json> void login(@RequestParam("usr") String usr, @RequestParam("pwd") String pwd) {
+		Controlador ctrl =  Controlador.getInstancia();
+		Gson json = new Gson();
+		if (usr.equals("admin")&&pwd.equals("admin")) {
+			this.loggedSuccess = true;
+			this.usr = pwd;
+		} else {
+			try {
+				this.loggedSuccess = ctrl.login(usr, pwd);
+				if (this.loggedSuccess == true)  {
+					this.usr = pwd;
+					System.out.println("Usuario logeado con exito");
+				} else {
+					System.out.println("Error de autenticacion");
+				}
+			} catch (Exception e) {
+				System.out.println("El usuario no existe");
+			}
+		}
+	}
+	
+	@RequestMapping(value="/loggedSucces", method = RequestMethod.GET, produces = {"application/json"})
+	public @ResponseBody<json> boolean isLogged() {
+		return this.loggedSuccess;
+	}
+	
+	@RequestMapping(value="/logOff", method= RequestMethod.POST)
+	public @ResponseBody<json> void logOff() {
+		this.loggedSuccess = false;
+		this.usr = null;
+	} 
+	
+	@RequestMapping(value="/getUsrInfo", method = RequestMethod.GET, produces = {"application/json"})
+	public @ResponseBody<json> String getUsrInfo() throws PersonaException {
+		Controlador ctrl = Controlador.getInstancia();
+		Gson json = new Gson();
+		if (this.loggedSuccess && this.usr != null &&!this.usr.isEmpty() && !this.usr.equals("admin"))
+			return json.toJson(ctrl.userInfo(this.usr));
+		else 
+			return null;
 	}
 }
